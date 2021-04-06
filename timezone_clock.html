@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeZone</title>
+    <style>
+        body {
+           margin: 0;
+           padding: 0;
+           height: 100%;
+        }
+        
+       #left{
+           width:50%;
+           height:800px;
+           float: left;
+          
+           
+       }
+       #right{
+           width:50%;
+           height:800px;
+           float: right;
+           
+       }
+      
+
+        #clock1,#clock2 {
+            width: 200px;
+            height: 200px;
+            border:1px solid rgb(243, 240, 240);
+            backdrop-filter:blur(10px);
+            /* border-image: linear-gradient(45deg, rgb(69, 55, 94), rgb(125, 84, 202), rgb(188, 84, 202), rgb(249, 216, 253))1;
+            clip-path: inset(0 round 10%); */
+            box-shadow: 2px 2px 5px rgba(241, 240, 240, 0.952),
+            -2px -1px 5px rgba(241, 240, 240, 0.952);
+            border-radius: 50%;
+            margin: auto;
+            position: relative;
+            animation:animate 5s ease-in-out infinite;
+        
+            
+        }
+
+        @keyframes animate{
+            0%{
+                transform: translateY(100%);
+            }
+            50%{
+                transform: translateY(80%);
+            }
+            100%{
+                transform: translateY(100%);
+            }
+        }
+
+        #container,#container2{
+            width: 200px;
+            height:200px;
+            background-image:url(./clocktext.png);
+            background-size: 100% 100%;
+            position: absolute;
+            z-index: 30;
+       
+        }
+
+        #circle,#circle2{
+            width:8px;
+            height:8px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+            top:50%;
+            left:50%;
+            transform: translate(-50%,-50%);
+            z-index: 20;
+        
+        }
+
+
+        #hour,#hour2{
+            width: 25%;
+            height: 5px;
+            border-radius: 5px;
+            background: linear-gradient(45deg, rgb(125, 84, 202), rgb(188, 84, 202), rgb(99, 74, 102));
+            position: absolute;
+            /* calc可計算不同單位 but運算符號前後要有空白 */
+            top: calc(50% - 3px);
+            left: 50%;
+            transform-origin: left center;
+
+        }
+
+        #minute,#minute2 {
+            width: 40%;
+            height: 4px;
+            border-radius: 5px;
+            background: rgb(202, 166, 206);
+            position: absolute;
+            /* calc可計算不同單位 but運算符號前後要有空白 */
+            top: calc(50% - 3px);
+            left: 50%;
+            transform-origin: left center;
+        }
+
+        #second,#second2 {
+            width: 40%;
+            height: 2px;
+            border-radius: 5px;
+            background: white;
+            position: absolute;
+            /* calc可計算不同單位 but運算符號前後要有空白 */
+            top: calc(50% - 3px);
+            left: 50%;
+            transform-origin: left center;
+        }
+
+        p{
+            color: aliceblue;
+            font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+            font-weight: bold;
+            
+            transform: translate(38%,1200%);
+
+        }
+
+      
+    </style>
+
+</head>
+
+<body>
+    
+    <div id="left">
+     <div id="clock1">
+           <div id="container"></div>
+           <div id="circle"></div>
+           <div id="hour"></div>
+           <div id="minute"></div>
+           <div id="second"></div>
+     </div>
+     <p>Taiwan LocalTime</p>
+    </div>
+    <div id="right">
+        <div id="clock2" time-zone=”Europe/London”>
+            <div id="container2"></div>
+            <div id="circle2"></div>
+            <div id="hour2"></div>
+            <div id="minute2"></div>
+            <div id="second2"></div>
+        </div>
+        <p>London LocalTime</p>
+        </div>
+        
+    <script>
+        // Taiwan
+        const hour = document.getElementById('hour')
+        const minute = document.getElementById('minute')
+        const second = document.getElementById('second')
+        
+
+        const update = () => {
+           
+            const now = new Date()
+            hour.style.transform = `rotate(${now.getHours() * 30 - 90}deg)`
+            minute.style.transform = `rotate(${now.getMinutes() * 6 - 90}deg)`
+            second.style.transform = `rotate(${now.getSeconds() * 6 - 90}deg)`
+
+            if (now.getHours() >= 18 || now.getHours() < 6) {
+                
+                document.getElementById('left').style.backgroundImage = "url(././images/zonebg_night.png)";
+                document.getElementById('left').style.backgroundSize="cover"
+
+          
+            } else {
+                document.getElementById('left').style.backgroundImage = "url(././images/zonebg_day.png)";
+                document.getElementById('left').style.backgroundSize="cover"
+            }
+        }
+       
+        setInterval(update, 1000)
+        update()
+
+        // London
+
+        const hour2 = document.getElementById('hour2')
+        const minute2 = document.getElementById('minute2')
+        const second2 = document.getElementById('second2')
+
+        const update2 = () => {
+            var d= new Date()
+        var utc_offset=d.getTimezoneOffset()
+        d.setMinutes(d.getMinutes()+utc_offset)
+    
+        var london_offset=1*60
+        d.setMinutes(d.getMinutes()+london_offset)
+        console.log(d)
+ 
+        
+            hour2.style.transform = `rotate(${d.getHours() * 30 - 90}deg)`
+            minute2.style.transform = `rotate(${d.getMinutes() * 6 - 90}deg)`
+            second2.style.transform = `rotate(${d.getSeconds() * 6 - 90}deg)`
+
+            if (d.getHours() >= 18 || d.getHours() < 6) {
+                
+                document.getElementById('right').style.backgroundImage = "url(././images/zonebg_night.png)";
+                document.getElementById('right').style.backgroundSize="cover"
+           
+
+            } else {
+                document.getElementById('right').style.backgroundImage = "url(././images/zonebg_day.png)";
+                document.getElementById('right').style.backgroundSize="cover"
+            }
+        }
+        
+
+        setInterval(update2, 1000)
+        update2()
+
+// nightcolor:#00184d
+// daycolor:#E6E6FA  #FFE4E1 #B0E0E6
+// document.body.style.background = ""
+
+
+
+
+    </script>
+</body>
+
+</html>
